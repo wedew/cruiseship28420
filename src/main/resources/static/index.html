@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="jquery-3.5.0.js"></script>
+</head>
+
+<script>
+
+    $(function () {
+        $("#addShip").hide();
+        let hh1 = true;
+        $("#openAddShip").click(function () {
+            if(hh1 == true){
+                $("#addShip").show();
+                hh1 = false;
+            }else{
+                $("#addShip").hide();
+                hh1 = true;
+            }
+
+        });
+
+
+        $("#updateShip").hide();
+        let hh2 = true;
+        $("#openUpdateShip").click(function () {
+            if(hh2 == true){
+                $("#updateShip").show();
+                hh2 = false;
+            }else{
+                $("#updateShip").hide();
+                hh2 = true;
+            }
+        });
+
+        $("#deleteShip").hide();
+        let hh3 = true;
+        $("#openDeleteShip").click(function () {
+            if(hh3 == true){
+                $("#deleteShip").show();
+                hh3 = false;
+            }else{
+                $("#deleteShip").hide();
+                hh3 = true;
+            }
+        });
+
+        $("#oneShip").hide();
+        let hh4 = true;
+        $("#openOneShip").click(function () {
+            if(hh4 == true){
+                $("#oneShip").show();
+                hh4 = false;
+            }else{
+                $("#oneShip").hide();
+                hh4 = true;
+            }
+        });
+
+
+        $("#add").click(function () {
+
+            let ship = {
+                name: $("#shipName").val(),
+                numberOfPools: $("#poolsNumber").val(),
+                numberOfRooms: $("#roomsNumber").val()
+            };
+                $.ajax({
+                    url:"/ships",
+                    type:"POST",
+                    data:JSON.stringify(ship),
+                    contentType:"application/json",
+
+                    success:function (newShip) {
+                        alert(newShip)
+                    },
+                    error:function (err) {
+                        alert(err.responseText);
+                    }
+                })
+        });
+
+        $("#update").click(function () {
+
+            let ship2 = {
+                id: $("#shipId").val(),
+                name: $("#shipName2").val(),
+                numberOfPools: $("#poolsNumber2").val(),
+                numberOfRooms: $("#roomsNumber2").val()
+            };
+            $.ajax({
+                url:"/ships/updateShip",
+                type:"POST",
+                data:JSON.stringify(ship2),
+                contentType:"application/json",
+
+                success:function (newShip2) {
+                    alert(newShip2)
+                },
+                error:function (err) {
+                    alert(err.responseText);
+                }
+            })
+        });
+
+        $("#delete").click(function () {
+            $.ajax({
+                url:"ships/delete?shipId=" + $("#shipId3").val(),
+                type:"DELETE",
+                success:function (result) {
+                    alert(result);
+                },
+                error:function (err) {
+                    alert(err.responseText);
+                }
+            })
+        });
+
+        $("#getAllShip").click(function () {
+            $.ajax({
+                url:"/ships/all",
+                success:function (CruiseShip) {
+                    $("#allShips").html("");
+                    for(let i = 0; CruiseShip.length; i++){
+                        $("#allShips").append( $("<p>").html("<b>ship id:</b> " + CruiseShip[i].id + ", <b>ship name:</b> " +
+                            CruiseShip[i].name +", <b>number of pools:</b> " + CruiseShip[i].numberOfPools +", <b>number of rooms:</b> " + CruiseShip[i].numberOfRooms));
+                    }
+                }
+            })
+        });
+
+        $("#getOneShip").click(function () {
+            $.ajax({
+                url:"ships/one?shipName=" + $("#shipName3").val(),
+                success:function (oneShip) {
+                    $("#allShips").html("");
+                    $("#allShips").append( $("<p>").html("<b>ship id:</b> " + oneShip.id + ", <b>ship name:</b> " +
+                        oneShip.name +", <b>number of pools:</b> " + oneShip.numberOfPools +", <b>number of rooms:</b> " + oneShip.numberOfRooms));
+                },
+                error:function (Error) {
+                        alert(Error.responseText);
+                }
+            })
+        })
+    });
+
+
+</script>
+
+<style>
+
+    form,div{
+        text-align: center;
+    }
+
+    input:not([type='button']){
+        border: solid 1px lightblue;
+        border-radius: 10px;
+        padding: 5px;
+        outline: none;
+    }
+
+</style>
+
+<body>
+<h1 style="text-align: center">port shipping list</h1>
+<br/><br/>
+<button id="openAddShip">add</button>
+<br/><br/>
+<form id="addShip" >
+    <input type="text" placeholder="ship name" id="shipName" />
+    <input type="number" placeholder="number of pools" id="poolsNumber" />
+    <input type="number" placeholder="number of rooms" id="roomsNumber" />
+    <input type="button" value="add ship" id="add" />
+</form>
+
+<button id="openUpdateShip">update</button>
+<br/><br/>
+<form id="updateShip" >
+    <input type="number" placeholder="ship id" id="shipId2" />
+    <input type="text" placeholder="ship name" id="shipName2" />
+    <input type="number" placeholder="number of pools" id="poolsNumber2" />
+    <input type="number" placeholder="number of rooms" id="roomsNumber2" />
+    <input type="button" value="update ship" id="update" />
+</form>
+
+<button id="openDeleteShip">delete</button>
+<br/><br/>
+<form id="deleteShip">
+    <input type="number" placeholder="ship id" id="shipId3">
+    <input type="button" value="delete ship" id="delete">
+</form>
+
+<button id="getAllShip">get all ships</button>
+<br/><br/>
+<button id="openOneShip">get ship by name</button>
+<form id="oneShip">
+    <input type="text" placeholder="ship name" id="shipName3">
+    <input type="button" value="get ship information" id="getOneShip">
+</form>
+
+<div id="allShips"></div>
+
+
+
+</body>
+</html>
